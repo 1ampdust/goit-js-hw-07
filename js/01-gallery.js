@@ -1,51 +1,45 @@
 // 01-gallery.js
 import { galleryItems } from "./gallery-items.js";
+// Change code below this line
 
-const galleryContainer = document.querySelector(".gallery");
-let activeInstance = null;
+console.log(galleryItems);
 
-function createGalleryMarkup(items) {
-  return items
-    .map(({ preview, original, description }) => {
-      return `<li class="gallery__item">
-                <a class="gallery__link" href="${original}">
-                  <img class="gallery__image" src="${preview}" alt="${description}" />
-                </a>
-              </li>`;
-    })
+const container = document.querySelector(".gallery");
+
+container.insertAdjacentHTML("beforeend", createMarkup(galleryItems));
+container.addEventListener("click", handleClick);
+
+function createMarkup(arr) {
+  return arr
+    .map(
+      ({ preview, original, description }) =>
+        `<li class="gallery__item">
+            <a class="gallery__link" href="${original}">
+            <img class="gallery__image" src="${preview}" data-source="${original}" alt="${description}">
+            </a>
+        </li>`
+    )
     .join("");
 }
 
-function renderGallery() {
-  const galleryMarkup = createGalleryMarkup(galleryItems);
-  galleryContainer.insertAdjacentHTML("beforeend", galleryMarkup);
+function handleClick(event) {
+  event.preventDefault();
+
+  if (event.target === event.currentTarget) {
+    return;
+  }
+
+  const modalImg = event.target.closest(".gallery__link").getAttribute("href");
+
+  const instance = basicLightbox.create(`
+    <img class="gallery__image" src="${modalImg}" alt="${modalImg.description}">
+    `);
+  instance.show();
+
+  document.addEventListener("keydown", (event) => {
+    if (event.code === "Escape") {
+      return instance.close();
+    }
+    return;
+  });
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-  renderGallery();
-
-  galleryContainer.addEventListener("click", function (event) {
-    event.preventDefault();
-    const galleryLink = event.target.closest(".gallery__link");
-
-    if (galleryLink) {
-      const imageUrl = galleryLink.getAttribute("href");
-
-      if (activeInstance) {
-        activeInstance.close();
-      }
-
-      activeInstance = basicLightbox.create(`
-        <img src="${imageUrl}" alt="Image">
-      `);
-
-      activeInstance.show();
-    }
-  });
-
-  document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape" && activeInstance) {
-      activeInstance.close();
-    }
-  });
-});
