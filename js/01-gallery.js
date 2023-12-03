@@ -56,3 +56,5 @@ function handleClick(event) {
 `);
   instance.show();
 }
+
+//я видалив те що треба робити с кнопкою
