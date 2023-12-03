@@ -9,11 +9,6 @@ const container = document.querySelector(".gallery");
 
 container.insertAdjacentHTML("beforeend", createMarkup(galleryItems));
 
-const lightbox = new SimpleLightbox(".gallery a", {
-  captionsData: "alt",
-  captionDelay: 250,
-});
-
 function createMarkup(arr) {
   return arr
     .map(
@@ -33,3 +28,8 @@ function createMarkup(arr) {
     )
     .join("");
 }
+
+const lightbox = new SimpleLightbox(".gallery a", {
+  captionsData: "alt",
+  captionDelay: 250,
+});
